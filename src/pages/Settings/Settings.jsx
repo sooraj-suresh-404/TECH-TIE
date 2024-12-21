@@ -29,7 +29,9 @@ import {
   PhotoCamera as CameraIcon,
   GitHub as GitHubIcon,
   LinkedIn as LinkedInIcon,
+  DarkMode as DarkModeIcon,
 } from '@mui/icons-material';
+import { useThemeContext } from '../../theme/ThemeContext';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -64,6 +66,7 @@ const Settings = () => {
   });
 
   const [saveStatus, setSaveStatus] = useState(null);
+  const { mode, toggleColorMode } = useThemeContext();
 
   const handleChange = (section, key) => (event) => {
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
@@ -191,6 +194,21 @@ const Settings = () => {
               />
             </Grid>
           </Grid>
+          <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <DarkModeIcon color="primary" />
+            Appearance
+          </Typography>
+          <Box sx={{ mt: 2 }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={mode === 'dark'}
+                  onChange={toggleColorMode}
+                />
+              }
+              label="Dark Mode"
+            />
+          </Box>
         </Paper>
       )}
 

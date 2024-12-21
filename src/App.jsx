@@ -1,8 +1,8 @@
-import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { theme } from './theme/theme';
 import AppRoutes from './routes';
+import { CustomThemeProvider } from './theme/ThemeContext';
+import { AuthProvider } from './contexts/AuthContext';
 import { useState } from 'react';
 
 function App() {
@@ -18,12 +18,14 @@ function App() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <CustomThemeProvider>
       <CssBaseline />
       <Router>
-        <AppRoutes />
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
       </Router>
-    </ThemeProvider>
+    </CustomThemeProvider>
   );
 }
 

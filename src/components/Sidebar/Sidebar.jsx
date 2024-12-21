@@ -4,9 +4,12 @@ import {
   ListItem,
   ListItemButton,
   ListItemIcon,
-  ListItemText,
-  Divider,
   Box,
+  Typography,
+  useTheme,
+  Popper,
+  Paper,
+  Fade,
 } from '@mui/material';
 import {
   Home as HomeIcon,
@@ -14,27 +17,68 @@ import {
   Favorite as FavoriteIcon,
   Chat as ChatIcon,
   Group as GroupIcon,
-  EmojiEvents as EmojiEventsIcon,
   Code as CodeIcon,
-  Settings as SettingsIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 
-const drawerWidth = 240;
+const drawerWidth = 70;
 
 const menuItems = [
-  { text: 'Home', icon: <HomeIcon />, path: '/' },
-  { text: 'Profile', icon: <PersonIcon />, path: '/profile' },
-  { text: 'Matches', icon: <FavoriteIcon />, path: '/matches' },
-  { text: 'Chat', icon: <ChatIcon />, path: '/chat' },
-  { text: 'Community', icon: <GroupIcon />, path: '/community' },
-  { text: 'Challenges', icon: <CodeIcon />, path: '/challenges' },
-  { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
+  { 
+    text: 'Home',
+    icon: <HomeIcon />,
+    path: '/',
+    description: 'Dashboard & Overview'
+  },
+  { 
+    text: 'Profile',
+    icon: <PersonIcon />,
+    path: '/profile',
+    description: 'Your Developer Profile'
+  },
+  { 
+    text: 'Matches',
+    icon: <FavoriteIcon />,
+    path: '/matches',
+    description: 'Find Coding Partners'
+  },
+  { 
+    text: 'Chat',
+    icon: <ChatIcon />,
+    path: '/chat',
+    description: 'Message Your Matches'
+  },
+  { 
+    text: 'Community',
+    icon: <GroupIcon />,
+    path: '/community',
+    description: 'Connect & Collaborate'
+  },
+  { 
+    text: 'Challenges',
+    icon: <CodeIcon />,
+    path: '/challenges',
+    description: 'Coding Challenges'
+  },
 ];
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [hoveredItem, setHoveredItem] = useState(null);
+
+  const handleMouseEnter = (event, item) => {
+    setAnchorEl(event.currentTarget);
+    setHoveredItem(item);
+  };
+
+  const handleMouseLeave = () => {
+    setAnchorEl(null);
+    setHoveredItem(null);
+  };
 
   return (
     <Drawer
@@ -42,43 +86,106 @@ const Sidebar = () => {
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        [`& .MuiDrawer-paper`]: {
+        '& .MuiDrawer-paper': {
           width: drawerWidth,
           boxSizing: 'border-box',
-          mt: 8,
           backgroundColor: 'background.paper',
+          borderRight: '1px solid',
+          borderColor: 'divider',
+          mt: 8,
         },
       }}
     >
-      <Box sx={{ overflow: 'auto', mt: 2 }}>
-        <List>
-          {menuItems.map((item) => (
-            <ListItem key={item.text} disablePadding>
-              <ListItemButton
-                selected={location.pathname === item.path}
-                onClick={() => navigate(item.path)}
+      <List sx={{ pt: 2 }}>
+        {menuItems.map((item) => {
+          const isSelected = location.pathname === item.path;
+          
+          return (
+            <ListItem 
+              key={item.text} 
+              disablePadding 
+              onMouseEnter={(e) => handleMouseEnter(e, item)}
+              onMouseLeave={handleMouseLeave}
+              sx={{ 
+                display: 'flex',
+                justifyContent: 'center',
+                py: 1,
+              }}
+            >
+              <Box
                 sx={{
-                  '&.Mui-selected': {
-                    backgroundColor: 'primary.light',
-                    color: 'white',
-                    '&:hover': {
-                      backgroundColor: 'primary.main',
-                    },
-                    '& .MuiListItemIcon-root': {
-                      color: 'white',
-                    },
+                  width: 40,
+                  height: 40,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '50%',
+                  backgroundColor: isSelected ? 'primary.main' : 'transparent',
+                  transition: 'all 0.2s ease-in-out',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: isSelected 
+                      ? 'primary.dark'
+                      : theme.palette.mode === 'light'
+                        ? 'rgba(0, 0, 0, 0.04)'
+                        : 'rgba(255, 255, 255, 0.08)',
                   },
                 }}
+                onClick={() => navigate(item.path)}
               >
-                <ListItemIcon sx={{ color: location.pathname === item.path ? 'white' : 'inherit' }}>
+                <Box
+                  component="span"
+                  sx={{
+                    color: isSelected ? 'white' : 'text.primary',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 24,
+                  }}
+                >
                   {item.icon}
-                </ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
+                </Box>
+              </Box>
             </ListItem>
-          ))}
-        </List>
-      </Box>
+          );
+        })}
+      </List>
+
+      <Popper
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        placement="right"
+        transition
+        sx={{ zIndex: theme.zIndex.drawer + 2 }}
+      >
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={200}>
+            <Paper
+              elevation={4}
+              sx={{
+                p: 2,
+                ml: 1,
+                width: 200,
+                backgroundColor: theme.palette.mode === 'dark' 
+                  ? 'background.paper' 
+                  : 'white',
+                borderRadius: 2,
+              }}
+            >
+              {hoveredItem && (
+                <>
+                  <Typography variant="subtitle1" fontWeight={600}>
+                    {hoveredItem.text}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {hoveredItem.description}
+                  </Typography>
+                </>
+              )}
+            </Paper>
+          </Fade>
+        )}
+      </Popper>
     </Drawer>
   );
 };

@@ -15,6 +15,15 @@ import {
   Stack,
   Link,
   CircularProgress,
+  TextField,
+  Tooltip,
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import {
   GitHub as GitHubIcon,
@@ -24,8 +33,11 @@ import {
   Star as StarIcon,
   Assessment as AssessmentIcon,
   Language as WebsiteIcon,
+  Add as AddIcon,
+  PhotoCamera as CameraIcon,
 } from '@mui/icons-material';
 import EditProfileDialog from '../../components/Profile/EditProfileDialog';
+import ProfilePhotoUpload from '../../components/Profile/ProfilePhotoUpload';
 
 const techSkills = [
   { name: 'React', level: 90 },
@@ -78,6 +90,12 @@ const Profile = () => {
     isRemote: true,
   });
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [openSkillDialog, setOpenSkillDialog] = useState(false);
+  const [newSkill, setNewSkill] = useState('');
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [photoDialog, setPhotoDialog] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   useEffect(() => {
     setTimeout(() => {
@@ -108,6 +126,110 @@ const Profile = () => {
     setIsEditDialogOpen(false);
   };
 
+  // Handle profile photo change
+  const handlePhotoChange = (photoUrl, file) => {
+    setProfileData(prev => ({
+      ...prev,
+      photo: photoUrl
+    }));
+    setSnackbar({
+      open: true,
+      message: 'Profile photo updated successfully!',
+      severity: 'success'
+    });
+    
+    // Here you would typically upload the file to your server
+    // const formData = new FormData();
+    // formData.append('photo', file);
+    // await uploadProfilePhoto(formData);
+  };
+
+  // Handle photo upload confirmation
+  const handlePhotoUpload = () => {
+    if (selectedPhoto) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileData(prev => ({ ...prev, photo: reader.result }));
+        setSnackbar({
+          open: true,
+          message: 'Profile photo updated successfully!',
+          severity: 'success'
+        });
+      };
+      reader.readAsDataURL(selectedPhoto);
+    }
+    setPhotoDialog(false);
+  };
+
+  // Handle skill management
+  const handleAddSkill = () => {
+    if (newSkill.trim()) {
+      if (profileData.techStack.includes(newSkill.trim())) {
+        setSnackbar({
+          open: true,
+          message: 'This skill already exists!',
+          severity: 'warning'
+        });
+        return;
+      }
+      setProfileData(prev => ({
+        ...prev,
+        techStack: [...prev.techStack, newSkill.trim()]
+      }));
+      setSnackbar({
+        open: true,
+        message: 'Skill added successfully!',
+        severity: 'success'
+      });
+      setNewSkill('');
+      setOpenSkillDialog(false);
+    }
+  };
+
+  const handleRemoveSkill = (skillToRemove) => {
+    setProfileData(prev => ({
+      ...prev,
+      techStack: prev.techStack.filter(skill => skill !== skillToRemove)
+    }));
+    setSnackbar({
+      open: true,
+      message: 'Skill removed successfully!',
+      severity: 'success'
+    });
+  };
+
+  // Handle social links
+  const handleSocialClick = (url) => {
+    window.open(`https://${url}`, '_blank', 'noopener,noreferrer');
+  };
+
+  // Handle profile editing
+  const handleEditProfile = () => {
+    setIsEditing(true);
+  };
+
+  const handleSaveProfile = () => {
+    setIsEditing(false);
+    setSnackbar({
+      open: true,
+      message: 'Profile updated successfully!',
+      severity: 'success'
+    });
+  };
+
+  // Handle profile updates
+  const handleProfileChange = (field, value) => {
+    setProfileData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  // Calculate XP progress
+  const calculateProgress = () => {
+    return (profileData.techStack.length / techSkills.length) * 100;
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Profile Header */}
@@ -122,10 +244,9 @@ const Profile = () => {
         
         <Grid container spacing={4} alignItems="center">
           <Grid item>
-            <Avatar
-              sx={{ width: 120, height: 120 }}
-              src="/path-to-profile-image.jpg"
-              alt="Profile"
+            <ProfilePhotoUpload
+              currentPhoto={profileData.photo}
+              onPhotoChange={handlePhotoChange}
             />
           </Grid>
           <Grid item xs={12} sm>
@@ -282,6 +403,43 @@ const Profile = () => {
         onClose={handleEditClose}
         initialData={profileData}
       />
+
+      {/* Photo Upload Dialog */}
+      <Dialog open={photoDialog} onClose={() => setPhotoDialog(false)}>
+        <DialogTitle>Update Profile Photo</DialogTitle>
+        <DialogContent>
+          {selectedPhoto && (
+            <Box sx={{ textAlign: 'center', mt: 2 }}>
+              <img
+                src={URL.createObjectURL(selectedPhoto)}
+                alt="Preview"
+                style={{ maxWidth: '100%', maxHeight: 200, borderRadius: '8px' }}
+              />
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPhotoDialog(false)}>Cancel</Button>
+          <Button onClick={handlePhotoUpload} variant="contained">
+            Save Photo
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

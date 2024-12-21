@@ -9,15 +9,50 @@ import {
   DialogActions,
   Button,
   Typography,
+  styled,
 } from '@mui/material';
 import {
   CameraAlt as CameraIcon,
-  Edit as EditIcon,
 } from '@mui/icons-material';
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
+const ProfileImageContainer = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  '&:hover .profile-image-overlay': {
+    opacity: 1,
+  },
+}));
+
+const ImageOverlay = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  opacity: 0,
+  transition: 'opacity 0.3s ease',
+  cursor: 'pointer',
+}));
 
 const ProfilePhotoUpload = ({ currentPhoto, onPhotoChange }) => {
   const [open, setOpen] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(currentPhoto);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -28,9 +63,9 @@ const ProfilePhotoUpload = ({ currentPhoto, onPhotoChange }) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewUrl(reader.result);
+        setOpen(true);
       };
       reader.readAsDataURL(file);
-      setOpen(true);
     }
   };
 
@@ -38,78 +73,76 @@ const ProfilePhotoUpload = ({ currentPhoto, onPhotoChange }) => {
     if (selectedFile) {
       onPhotoChange(previewUrl, selectedFile);
     }
-    setOpen(false);
+    handleClose();
   };
 
-  const handleCancel = () => {
-    setPreviewUrl(currentPhoto);
-    setSelectedFile(null);
+  const handleClose = () => {
     setOpen(false);
+    setPreviewUrl(null);
+    setSelectedFile(null);
   };
 
   return (
     <>
-      <Box sx={{ position: 'relative' }}>
+      <ProfileImageContainer>
         <Avatar
           sx={{
             width: 120,
             height: 120,
             border: '4px solid white',
-            boxShadow: (theme) => `0 0 0 4px ${theme.palette.primary.main}`,
-            transition: 'transform 0.2s',
-            '&:hover': {
-              transform: 'scale(1.05)',
-            },
+            boxShadow: (theme) => theme.shadows[3],
           }}
           src={currentPhoto || '/default-avatar.png'}
-          alt="Profile"
         />
-        <IconButton
-          sx={{
-            position: 'absolute',
-            right: -8,
-            bottom: -8,
-            backgroundColor: 'primary.main',
-            '&:hover': {
-              backgroundColor: 'primary.dark',
-            },
-            color: 'white',
-            boxShadow: 2,
-          }}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <CameraIcon />
-        </IconButton>
-        <input
-          type="file"
-          hidden
-          ref={fileInputRef}
-          accept="image/*"
-          onChange={handleFileSelect}
-        />
-      </Box>
+        <ImageOverlay className="profile-image-overlay">
+          <IconButton
+            sx={{ color: 'white' }}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <CameraIcon />
+          </IconButton>
+          <VisuallyHiddenInput
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileSelect}
+          />
+        </ImageOverlay>
+      </ProfileImageContainer>
 
-      <Dialog open={open} onClose={handleCancel} maxWidth="sm" fullWidth>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>Update Profile Photo</DialogTitle>
         <DialogContent>
           <Box sx={{ textAlign: 'center', py: 2 }}>
-            <Avatar
-              sx={{
-                width: 200,
-                height: 200,
-                mx: 'auto',
-                mb: 2,
-              }}
-              src={previewUrl}
-            />
-            <Typography variant="body2" color="text.secondary">
-              Preview of your new profile photo
+            {previewUrl && (
+              <Avatar
+                src={previewUrl}
+                sx={{
+                  width: 200,
+                  height: 200,
+                  mx: 'auto',
+                  border: '4px solid white',
+                  boxShadow: (theme) => theme.shadows[3],
+                }}
+              />
+            )}
+            <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
+              Click save to update your profile photo
             </Typography>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel}>Cancel</Button>
-          <Button onClick={handleSave} variant="contained">
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button
+            onClick={handleSave}
+            variant="contained"
+            color="primary"
+          >
             Save Photo
           </Button>
         </DialogActions>

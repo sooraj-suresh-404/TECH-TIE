@@ -44,6 +44,7 @@ const BottomNav = () => {
         zIndex: theme.zIndex.appBar,
         borderTop: 1,
         borderColor: 'divider',
+        backgroundColor: theme.palette.background.paper,
       }}
       elevation={3}
     >

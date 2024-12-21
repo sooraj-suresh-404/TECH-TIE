@@ -7,10 +7,14 @@ import Chat from './pages/Chat';
 import Community from './pages/Community';
 import Challenges from './pages/Challenges';
 import Settings from './pages/Settings';
+import Login from './pages/Auth/Login';
+import Signup from './pages/Auth/Signup';
 
 const AppRoutes = () => {
   return (
     <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="profile" element={<Profile />} />
