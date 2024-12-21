@@ -9,6 +9,7 @@ import {
   Stack,
   Chip,
   Paper,
+  Avatar,
   useTheme,
 } from '@mui/material';
 import {
@@ -16,32 +17,53 @@ import {
   Group as GroupIcon,
   Rocket as RocketIcon,
   Psychology as PsychologyIcon,
+  GitHub as GitHubIcon,
+  LinkedIn as LinkedInIcon,
+  Star as StarIcon,
 } from '@mui/icons-material';
 
-const features = [
+const featuredDevelopers = [
   {
-    title: 'Smart Matching',
-    description: 'Find developers who match your tech stack and project interests.',
-    icon: <PsychologyIcon sx={{ fontSize: 40 }} />,
-    color: '#2D46B9',
+    name: 'Sarah Chen',
+    role: 'Full Stack Developer',
+    avatar: '/path-to-avatar1.jpg',
+    skills: ['React', 'Node.js', 'AWS'],
+    github: '#',
+    linkedin: '#',
   },
   {
-    title: 'Code Challenges',
-    description: 'Improve your skills with daily coding challenges and competitions.',
-    icon: <CodeIcon sx={{ fontSize: 40 }} />,
-    color: '#14C38E',
+    name: 'Alex Kumar',
+    role: 'Frontend Specialist',
+    avatar: '/path-to-avatar2.jpg',
+    skills: ['Vue.js', 'TypeScript', 'Figma'],
+    github: '#',
+    linkedin: '#',
   },
   {
-    title: 'Project Collaboration',
-    description: 'Join exciting projects or find team members for your ideas.',
-    icon: <RocketIcon sx={{ fontSize: 40 }} />,
-    color: '#FF6B6B',
+    name: 'Maria Garcia',
+    role: 'DevOps Engineer',
+    avatar: '/path-to-avatar3.jpg',
+    skills: ['Docker', 'Kubernetes', 'AWS'],
+    github: '#',
+    linkedin: '#',
   },
 ];
 
-const techStacks = [
-  'React', 'Node.js', 'Python', 'TypeScript', 'AWS', 'Docker',
-  'MongoDB', 'GraphQL', 'Vue.js', 'Flutter', 'Go', 'Kubernetes'
+const successStories = [
+  {
+    title: 'AI-Powered Healthcare Platform',
+    description: 'A team of 4 developers collaborated to build a revolutionary healthcare platform.',
+    tech: ['Python', 'TensorFlow', 'React'],
+    teamSize: 4,
+    duration: '3 months',
+  },
+  {
+    title: 'E-commerce Marketplace',
+    description: 'Successfully launched a marketplace connecting artisans with customers globally.',
+    tech: ['Node.js', 'React', 'MongoDB'],
+    teamSize: 3,
+    duration: '4 months',
+  },
 ];
 
 const Home = () => {
@@ -52,84 +74,150 @@ const Home = () => {
       {/* Hero Section */}
       <Box
         sx={{
-          background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.secondary.main} 90%)`,
+          background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
           color: 'white',
-          pt: { xs: 8, md: 12 },
-          pb: { xs: 8, md: 12 },
+          pt: { xs: 10, md: 15 },
+          pb: { xs: 12, md: 18 },
+          position: 'relative',
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'url(/path-to-pattern.svg)',
+            opacity: 0.1,
+          },
         }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', maxWidth: 800, mx: 'auto' }}>
-            <Typography
-              variant="h1"
-              sx={{
-                fontSize: { xs: '2.5rem', md: '3.5rem' },
-                fontWeight: 700,
-                mb: 2,
-              }}
-            >
-              Connect with Tech Professionals
-            </Typography>
-            <Typography variant="h5" sx={{ mb: 4, opacity: 0.9 }}>
-              Find your perfect tech partner for projects, mentorship, and collaboration
-            </Typography>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
-              <Button
-                variant="contained"
-                size="large"
-                startIcon={<CodeIcon />}
+          <Grid container spacing={4} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <Box sx={{ position: 'relative', zIndex: 1 }}>
+                <Typography
+                  variant="h1"
+                  sx={{
+                    fontSize: { xs: '2.5rem', md: '4rem' },
+                    fontWeight: 800,
+                    mb: 2,
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.2)',
+                  }}
+                >
+                  Connect. Code.
+                  <br />
+                  Create Together.
+                </Typography>
+                <Typography variant="h5" sx={{ mb: 4, opacity: 0.9, maxWidth: 500 }}>
+                  Find your perfect tech partner for projects, mentorship, and collaboration
+                </Typography>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    startIcon={<CodeIcon />}
+                    sx={{
+                      bgcolor: 'white',
+                      color: 'primary.main',
+                      '&:hover': { bgcolor: 'grey.100' },
+                      py: 2,
+                      px: 4,
+                      fontSize: '1.1rem',
+                    }}
+                  >
+                    Get Started
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    startIcon={<GroupIcon />}
+                    sx={{
+                      borderColor: 'white',
+                      color: 'white',
+                      '&:hover': { borderColor: 'grey.100' },
+                      py: 2,
+                      px: 4,
+                      fontSize: '1.1rem',
+                    }}
+                  >
+                    Browse Developers
+                  </Button>
+                </Stack>
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={6} sx={{ display: { xs: 'none', md: 'block' } }}>
+              <Box
+                component="img"
+                src="/hero-illustration.png"
+                alt="Collaboration"
                 sx={{
-                  bgcolor: 'white',
-                  color: 'primary.main',
-                  '&:hover': { bgcolor: 'grey.100' },
-                  py: 1.5,
-                  px: 4,
+                  width: '100%',
+                  maxWidth: 600,
+                  filter: 'drop-shadow(5px 5px 10px rgba(0,0,0,0.3))',
+                  animation: 'float 6s ease-in-out infinite',
+                  '@keyframes float': {
+                    '0%, 100%': { transform: 'translateY(0)' },
+                    '50%': { transform: 'translateY(-20px)' },
+                  },
                 }}
-              >
-                Get Started
-              </Button>
-              <Button
-                variant="outlined"
-                size="large"
-                startIcon={<GroupIcon />}
-                sx={{
-                  borderColor: 'white',
-                  color: 'white',
-                  '&:hover': { borderColor: 'grey.100' },
-                  py: 1.5,
-                  px: 4,
-                }}
-              >
-                Browse Developers
-              </Button>
-            </Stack>
-          </Box>
+              />
+            </Grid>
+          </Grid>
         </Container>
       </Box>
 
-      {/* Features Section */}
-      <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Grid container spacing={4}>
-          {features.map((feature) => (
-            <Grid item xs={12} md={4} key={feature.title}>
+      {/* Featured Developers */}
+      <Container maxWidth="lg" sx={{ mt: -8, position: 'relative', zIndex: 2 }}>
+        <Grid container spacing={3}>
+          {featuredDevelopers.map((dev) => (
+            <Grid item xs={12} md={4} key={dev.name}>
               <Card
-                elevation={3}
+                elevation={4}
                 sx={{
                   height: '100%',
                   transition: 'transform 0.2s',
-                  '&:hover': { transform: 'translateY(-8px)' },
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                  },
                 }}
               >
-                <CardContent sx={{ textAlign: 'center', p: 4 }}>
-                  <Box sx={{ color: feature.color, mb: 2 }}>
-                    {feature.icon}
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Avatar
+                      src={dev.avatar}
+                      sx={{ width: 64, height: 64, mr: 2 }}
+                    />
+                    <Box>
+                      <Typography variant="h6">{dev.name}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {dev.role}
+                      </Typography>
+                    </Box>
                   </Box>
-                  <Typography variant="h5" gutterBottom>
-                    {feature.title}
-                  </Typography>
-                  <Typography variant="body1" color="text.secondary">
-                    {feature.description}
-                  </Typography>
+                  <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+                    {dev.skills.map((skill) => (
+                      <Chip key={skill} label={skill} size="small" />
+                    ))}
+                  </Stack>
+                  <Stack direction="row" spacing={1}>
+                    <Button
+                      startIcon={<GitHubIcon />}
+                      variant="outlined"
+                      size="small"
+                      href={dev.github}
+                    >
+                      GitHub
+                    </Button>
+                    <Button
+                      startIcon={<LinkedInIcon />}
+                      variant="outlined"
+                      size="small"
+                      href={dev.linkedin}
+                    >
+                      LinkedIn
+                    </Button>
+                  </Stack>
                 </CardContent>
               </Card>
             </Grid>
@@ -137,76 +225,113 @@ const Home = () => {
         </Grid>
       </Container>
 
-      {/* Tech Stack Section */}
-      <Box sx={{ bgcolor: 'grey.50', py: 8 }}>
+      {/* Success Stories */}
+      <Box sx={{ bgcolor: 'grey.50', py: { xs: 8, md: 12 }, mt: 8 }}>
         <Container maxWidth="lg">
-          <Typography variant="h4" align="center" gutterBottom>
-            Popular Tech Stacks
+          <Typography
+            variant="h3"
+            align="center"
+            gutterBottom
+            sx={{
+              fontWeight: 700,
+              mb: 6,
+              background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
+            Success Stories
           </Typography>
-          <Typography variant="subtitle1" align="center" color="text.secondary" sx={{ mb: 4 }}>
-            Connect with developers who share your tech interests
-          </Typography>
-          <Paper elevation={2} sx={{ p: 4 }}>
-            <Grid container spacing={2} justifyContent="center">
-              {techStacks.map((tech) => (
-                <Grid item key={tech}>
-                  <Chip
-                    label={tech}
-                    variant="outlined"
-                    clickable
+          <Grid container spacing={4}>
+            {successStories.map((story, index) => (
+              <Grid item xs={12} md={6} key={story.title}>
+                <Paper
+                  elevation={4}
+                  sx={{
+                    p: 4,
+                    height: '100%',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: 4,
+                      height: '100%',
+                      background: `linear-gradient(to bottom, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    },
+                  }}
+                >
+                  <Typography variant="h5" gutterBottom>
+                    {story.title}
+                  </Typography>
+                  <Typography variant="body1" paragraph>
+                    {story.description}
+                  </Typography>
+                  <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
+                    {story.tech.map((tech) => (
+                      <Chip
+                        key={tech}
+                        label={tech}
+                        size="small"
+                        variant="outlined"
+                      />
+                    ))}
+                  </Stack>
+                  <Box
                     sx={{
-                      borderRadius: 2,
-                      '&:hover': {
-                        bgcolor: 'primary.main',
-                        color: 'white',
-                      },
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      color: 'text.secondary',
                     }}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </Paper>
+                  >
+                    <Typography variant="body2">
+                      Team Size: {story.teamSize}
+                    </Typography>
+                    <Typography variant="body2">
+                      Duration: {story.duration}
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
         </Container>
       </Box>
 
-      {/* Stats Section */}
-      <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Grid container spacing={4}>
-          {[
-            { number: '10K+', label: 'Developers' },
-            { number: '5K+', label: 'Projects' },
-            { number: '1K+', label: 'Matches' },
-            { number: '500+', label: 'Challenges' },
-          ].map((stat) => (
-            <Grid item xs={6} md={3} key={stat.label}>
-              <Paper
-                elevation={2}
-                sx={{
-                  p: 3,
-                  textAlign: 'center',
-                  transition: 'transform 0.2s',
-                  '&:hover': { transform: 'translateY(-4px)' },
-                }}
-              >
-                <Typography
-                  variant="h3"
-                  sx={{
-                    mb: 1,
-                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  {stat.number}
-                </Typography>
-                <Typography variant="subtitle1" color="text.secondary">
-                  {stat.label}
-                </Typography>
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
+      {/* Call to Action */}
+      <Box
+        sx={{
+          bgcolor: 'primary.main',
+          color: 'white',
+          py: { xs: 8, md: 12 },
+          textAlign: 'center',
+        }}
+      >
+        <Container maxWidth="md">
+          <Typography variant="h3" gutterBottom sx={{ fontWeight: 700 }}>
+            Ready to Start Collaborating?
+          </Typography>
+          <Typography variant="h6" sx={{ mb: 4, opacity: 0.9 }}>
+            Join thousands of developers building amazing projects together
+          </Typography>
+          <Button
+            variant="contained"
+            size="large"
+            sx={{
+              bgcolor: 'white',
+              color: 'primary.main',
+              '&:hover': { bgcolor: 'grey.100' },
+              py: 2,
+              px: 6,
+              fontSize: '1.1rem',
+            }}
+          >
+            Join Now
+          </Button>
+        </Container>
+      </Box>
     </Box>
   );
 };

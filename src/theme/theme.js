@@ -45,5 +45,23 @@ export const theme = createTheme({
         },
       },
     },
+    MuiBottomNavigation: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#ffffff',
+        },
+      },
+    },
+    MuiBottomNavigationAction: {
+      styleOverrides: {
+        root: {
+          '&.Mui-selected': {
+            '& .MuiSvgIcon-root': {
+              transform: 'scale(1.1)',
+            },
+          },
+        },
+      },
+    },
   },
 }); 
